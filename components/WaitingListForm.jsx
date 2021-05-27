@@ -1,9 +1,13 @@
 import React, { useContext } from 'react';
 
 import { Formik } from 'formik';
-import WaitingListContext from '../context/waiting-list-context';
-import { waitingListValidationSchema } from '../utils/validationSchemas';
+
+import FormField from './FormField';
 import { postWaitingList } from '../services/waiting-list.service';
+import { waitingListValidationSchema } from '../utils/validationSchemas';
+
+import WaitingListContext from '../context/waiting-list-context';
+import WaitingListFormContext from '../context/waiting-list-form-context';
 
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
@@ -17,7 +21,7 @@ export default function WaitingListForm() {
   const onSubmit = (values, { setSubmitting, resetForm }) => {
     const { emailAddress, mobileNumber } = values;
 
-    postWaitingList({emailAddress, mobileNumber})
+    postWaitingList({ emailAddress, mobileNumber })
       .then((res) => res.json())
       .then((data) => {
         if (data.status === "error") {
@@ -45,55 +49,35 @@ export default function WaitingListForm() {
       validationSchema={waitingListValidationSchema}
       onSubmit={onSubmit}
     >
-      {({
-        handleSubmit,
-        handleChange,
-        errors,
-        touched,
-        isSubmitting,
-        isValid,
-        values,
-      }) => (
+      { formik => (
         <Form
           id="waiting-list-form"
-          onSubmit={handleSubmit}
+          onSubmit={formik.handleSubmit}
           className={Styles.waitingListForm}
         >
-          <Form.Group controlId="emailAddress">
-            <Form.Label> Email Address </Form.Label>
-            <Form.Control
+          <WaitingListFormContext.Provider value={formik}>
+            <FormField
+              id="emailAddress"
               name="emailAddress"
+              label="Email Address"
               placeholder="Enter email"
-              onChange={handleChange}
-              value={values.emailAddress}
               maxLength={50}
-              isInvalid={!!touched.emailAddress && !!errors.emailAddress}
             />
-            <Form.Control.Feedback type="invalid">
-              {touched.emailAddress && errors.emailAddress}
-            </Form.Control.Feedback>
-          </Form.Group>
-          <Form.Group controlId="mobileNumber">
-            <Form.Label> Mobile Number </Form.Label>
-            <Form.Control
+            <FormField
+              id="mobileNumber"
               name="mobileNumber"
+              label="Mobile Number"
               placeholder="Mobile Number"
-              onChange={handleChange}
-              value={values.mobileNumber}
               maxLength={11}
-              isInvalid={!!touched.emailAddress && !!errors.mobileNumber}
             />
-            <Form.Control.Feedback type="invalid">
-              {touched.mobileNumber && errors.mobileNumber}
-            </Form.Control.Feedback>
-          </Form.Group>
+          </WaitingListFormContext.Provider>
           <Button
             variant="primary"
             type="submit"
-            disabled={isSubmitting || !isValid}
+            disabled={formik.isSubmitting || !formik.isValid}
           >
             Submit
-            {isSubmitting && (
+            {formik.isSubmitting && (
               <Spinner
                 as="span"
                 size="sm"
