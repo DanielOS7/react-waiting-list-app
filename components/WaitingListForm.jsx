@@ -17,12 +17,7 @@ export default function WaitingListForm() {
   const onSubmit = (values, { setSubmitting, resetForm }) => {
     const { emailAddress, mobileNumber } = values;
 
-    const data = {
-      emailAddress,
-      mobileNumber,
-    };
-
-    postWaitingList(data)
+    postWaitingList({emailAddress, mobileNumber})
       .then((res) => res.json())
       .then((data) => {
         if (data.status === "error") {
