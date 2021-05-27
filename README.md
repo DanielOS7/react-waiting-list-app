@@ -31,4 +31,6 @@ were the best practice for next.js! Interested to learn more :)
 
 As this was a small app I did the waiting list page directly in index.js 'id="waiting-list"' instead of creating a component for it.
 
+I had issues changing the background for the entire app in next.js so left it plain white, left this issue to look into testing-library and how to
+set jest testing in this framework
 
